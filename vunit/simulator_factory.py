@@ -15,6 +15,7 @@ from vunit.activehdl_interface import ActiveHDLInterface
 from vunit.rivierapro_interface import RivieraProInterface
 from vunit.ghdl_interface import GHDLInterface
 from vunit.incisive_interface import IncisiveInterface
+from vunit.nvc_interface import NvcInterface
 
 
 class SimulatorFactory(object):
@@ -31,7 +32,8 @@ class SimulatorFactory(object):
                 RivieraProInterface,
                 ActiveHDLInterface,
                 GHDLInterface,
-                IncisiveInterface]
+                IncisiveInterface,
+                NvcInterface]
 
     @classmethod
     def available_simulators(cls):
