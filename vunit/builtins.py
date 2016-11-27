@@ -169,6 +169,7 @@ def add_array_util(library, vhdl_standard):
         raise RuntimeError("Array utility only supports vhdl 2008")
 
     library.add_source_files(join(VHDL_PATH, "array", "src", "array_pkg.vhd"))
+    library.add_source_files(join(VHDL_PATH, "array", "src", "array_assert_pkg.vhd"))
 
 
 def osvvm_is_installed():

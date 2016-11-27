@@ -7,6 +7,7 @@
 -- @TODO > 32-bit ieee signed/unsigned
 
 use std.textio.all;
+use work.array_assert_pkg.all;
 
 package array_pkg is
 
@@ -70,7 +71,7 @@ package body array_pkg is
                       variable result : out integer) is
     variable chr : character;
   begin
-    assert not endfile(fread) report "Premature end of file";
+    array_assert(not endfile(fread), "Premature end of file");
     read(fread, chr);
     result := character'pos(chr);
   end procedure;
@@ -171,25 +172,25 @@ package body array_pkg is
 
     procedure validate_data is
     begin
-      assert my_data /= null report "Data is not allocated";
+      array_assert(my_data /= null, "Data is not allocated");
     end procedure;
 
     procedure validate_bounds(name : string; val, bound : integer) is
     begin
-      assert 0 <= val and val < bound
-                  report (name & "=" & integer'image(val) & " " &
-                          "is out of bounds " &
-                          "0 <= " & name  &" < " & integer'image(bound));
+      array_assert(0 <= val and val < bound,
+                   (name & "=" & integer'image(val) & " " &
+                    "is out of bounds " &
+                    "0 <= " & name  &" < " & integer'image(bound)));
     end procedure;
 
     procedure validate_value(value : integer) is
     begin
-      assert my_lower_limit <= value and value <= my_upper_limit
-          report ("value=" & integer'image(value) & " " &
-                  "is out of bounds " &
-                  integer'image(my_lower_limit) &
-                  " <= value <= " &
-                  integer'image(my_upper_limit));
+      array_assert(my_lower_limit <= value and value <= my_upper_limit,
+                   ("value=" & integer'image(value) & " " &
+                    "is out of bounds " &
+                    integer'image(my_lower_limit) &
+                    " <= value <= " &
+                    integer'image(my_upper_limit)));
     end procedure;
 
     procedure realloc(new_length : integer) is
@@ -289,8 +290,8 @@ package body array_pkg is
     procedure set_word_size(bit_width : natural := 32;
                             is_signed : boolean := true) is
     begin
-      assert (1 <= bit_width and bit_width < 32) or (bit_width = 32 and is_signed)
-        report "Unsupported combination of bit_width and is_signed";
+      array_assert((1 <= bit_width and bit_width < 32) or (bit_width = 32 and is_signed),
+                   "Unsupported combination of bit_width and is_signed");
       my_bit_width := bit_width;
       my_is_signed := is_signed;
 
