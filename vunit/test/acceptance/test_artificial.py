@@ -80,7 +80,7 @@ class TestVunitArtificial(unittest.TestCase):
     def test_run_selected_tests_in_same_sim_test_bench_vhdl(self):
         self._test_run_selected_tests_in_same_sim_test_bench(self.artificial_run_vhdl)
 
-    @unittest.skipUnless(simulator_is("modelsim"), "Only modelsim supports verilog")
+    @unittest.skipUnless(simulator_is("modelsim", "rivierapro"), "Verilog support")
     def test_run_selected_tests_in_same_sim_test_bench_verilog(self):
         self._test_run_selected_tests_in_same_sim_test_bench(self.artificial_run_verilog)
 
@@ -117,7 +117,7 @@ class TestVunitArtificial(unittest.TestCase):
             ("failed", "lib.tb_same_sim_some_fail.Test 2"),
             ("skipped", "lib.tb_same_sim_some_fail.Test 3")])
 
-    @unittest.skipUnless(simulator_is("modelsim"), "Only modelsim supports verilog")
+    @unittest.skipUnless(simulator_is("modelsim", "rivierapro"), "Verilog support")
     def test_artificial_verilog(self):
         self.check(self.artificial_run_verilog,
                    exit_code=1)
