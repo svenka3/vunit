@@ -70,6 +70,7 @@ class VHDLDesignFile(object):  # pylint: disable=too-many-instance-attributes
                  entities=None,
                  packages=None,
                  package_bodies=None,
+                 package_instantiations=None,
                  architectures=None,
                  contexts=None,
                  component_instantiations=None,
@@ -78,6 +79,7 @@ class VHDLDesignFile(object):  # pylint: disable=too-many-instance-attributes
         self.entities = [] if entities is None else entities
         self.packages = [] if packages is None else packages
         self.package_bodies = [] if package_bodies is None else package_bodies
+        self.package_instantiations = [] if package_instantiations is None else package_instantiations
         self.architectures = [] if architectures is None else architectures
         self.contexts = [] if contexts is None else contexts
         self.component_instantiations = [] if component_instantiations is None else component_instantiations
@@ -94,6 +96,7 @@ class VHDLDesignFile(object):  # pylint: disable=too-many-instance-attributes
                    architectures=list(VHDLArchitecture.find(code)),
                    packages=list(VHDLPackage.find(code)),
                    package_bodies=list(VHDLPackageBody.find(code)),
+                   package_instantiations=list(cls._find_package_instantiations(code)),
                    contexts=list(VHDLContext.find(code)),
                    component_instantiations=list(cls._find_component_instantiations(code)),
                    configurations=list(VHDLConfiguration.find(code)),
@@ -111,6 +114,25 @@ class VHDLDesignFile(object):  # pylint: disable=too-many-instance-attributes
         """
         matches = cls._component_re.findall(code)
         return [comp_name for comp_name in matches]
+
+    _package_instantiation_re = re.compile(r"""
+    \b                    # Word boundary
+    package               # package keyword
+    \s+                   # At least one whitespace
+    ([a-zA-Z][\w]*)       # An identifier
+    \s+                   # At least one whitespace
+    is                    # is keyword
+    \s+                   # At least one whitespace
+    new                   # new keyword
+    """, re.MULTILINE | re.IGNORECASE | re.VERBOSE)
+
+    @classmethod
+    def _find_package_instantiations(cls, code):
+        """
+        Return the package name of all package instantiations found within the code
+        """
+        matches = cls._package_instantiation_re.findall(code)
+        return [package_name for package_name in matches]
 
 
 class VHDLPackageBody(object):

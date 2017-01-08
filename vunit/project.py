@@ -816,6 +816,9 @@ class VHDLSourceFile(SourceFile):
         for package in design_file.packages:
             result.append(VHDLDesignUnit(package.identifier, self, 'package'))
 
+        for package_instantiation in design_file.package_instantiations:
+            result.append(VHDLDesignUnit(package_instantiation, self, 'package instantiation'))
+
         for architecture in design_file.architectures:
             result.append(VHDLDesignUnit(architecture.identifier, self, 'architecture', False, architecture.entity))
 
