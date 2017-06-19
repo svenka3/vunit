@@ -2,7 +2,7 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this file,
 # You can obtain one at http://mozilla.org/MPL/2.0/.
 #
-# Copyright (c) 2015-2016, Lars Asplund lars.anders.asplund@gmail.com
+# Copyright (c) 2015-2017, Lars Asplund lars.anders.asplund@gmail.com
 
 """
 Functions to add builtin VHDL code to a project for compilation
@@ -224,6 +224,8 @@ def add_com(library, vhdl_standard, use_debug_codecs=False, supports_context=Tru
     library.add_source_files(join(VHDL_PATH, "com", "src", "com_string.vhd"))
     library.add_source_files(join(VHDL_PATH, "com", "src", "com_debug_codec_builder.vhd"))
     library.add_source_files(join(VHDL_PATH, "com", "src", "com_std_codec_builder.vhd"))
+    library.add_source_files(join(VHDL_PATH, "com", "src", "com_support.vhd"))
+    library.add_source_files(join(VHDL_PATH, "com", "src", "com_messenger.vhd"))
 
     if use_debug_codecs:
         library.add_source_files(join(VHDL_PATH, "com", "src", "com_codec_debug.vhd"))
