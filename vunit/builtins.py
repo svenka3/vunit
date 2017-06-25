@@ -226,6 +226,9 @@ def add_com(library, vhdl_standard, use_debug_codecs=False, supports_context=Tru
     library.add_source_files(join(VHDL_PATH, "com", "src", "com_std_codec_builder.vhd"))
     library.add_source_files(join(VHDL_PATH, "com", "src", "com_support.vhd"))
     library.add_source_files(join(VHDL_PATH, "com", "src", "com_messenger.vhd"))
+    library.add_source_files(join(VHDL_PATH, "com", "src", "com_deprecated.vhd"))
+    library.add_source_files(join(VHDL_PATH, "com", "src", "com_common.vhd"))
+    library.add_source_files(join(VHDL_PATH, "com", "src", "com_string_payload.vhd"))
 
     if use_debug_codecs:
         library.add_source_files(join(VHDL_PATH, "com", "src", "com_codec_debug.vhd"))
