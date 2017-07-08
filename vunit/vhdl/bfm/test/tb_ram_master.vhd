@@ -36,7 +36,7 @@ architecture a of tb_ram_master is
 begin
 
   main : process
-    variable reply : reply_t;
+    variable reply : bus_reference_t;
     variable reply_queue : queue_t := allocate;
     variable tmp : std_logic_vector(rdata'range);
   begin

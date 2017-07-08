@@ -20,6 +20,8 @@ package bus_pkg is
     p_fail_log : fail_log_t;
   end record;
 
+  alias bus_reference_t is reply_t;
+
   impure function new_bus(data_length, address_length : natural) return bus_t;
   impure function data_length(bus_handle : bus_t) return natural;
   impure function address_length(bus_handle : bus_t) return natural;
@@ -35,11 +37,11 @@ package bus_pkg is
   procedure read_bus(signal event : inout event_t;
                      constant bus_handle : bus_t;
                      constant address : std_logic_vector;
-                     variable reply : inout reply_t);
+                     variable reference : inout bus_reference_t);
 
   -- Await read bus reply
   procedure await_read_bus_reply(signal event : inout event_t;
-                                 variable reply : inout reply_t;
+                                 variable reference : inout bus_reference_t;
                                  variable data : inout std_logic_vector);
 
   -- Blocking read and check result
@@ -161,23 +163,23 @@ package body bus_pkg is
   procedure read_bus(signal event : inout event_t;
                      constant bus_handle : bus_t;
                      constant address : std_logic_vector;
-                     variable reply : inout reply_t) is
+                     variable reference : inout bus_reference_t) is
     variable msg : msg_t;
   begin
     msg := allocate;
     push(msg.data, bus_access_type_t'pos(read_access));
     push_std_ulogic_vector(msg.data, address);
-    send(event, bus_handle.p_inbox, msg, reply);
+    send(event, bus_handle.p_inbox, msg, reference);
   end procedure;
 
   -- Await read bus reply
   procedure await_read_bus_reply(signal event : inout event_t;
-                                 variable reply : inout reply_t;
+                                 variable reference : inout bus_reference_t;
                                  variable data : inout std_logic_vector) is
   begin
-    recv_reply(event, reply);
-    data := pop_std_ulogic_vector(reply.data)(data'range);
-    recycle(reply);
+    recv_reply(event, reference);
+    data := pop_std_ulogic_vector(reference.data)(data'range);
+    recycle(reference);
   end procedure;
 
   -- Blocking read with immediate reply
@@ -185,10 +187,10 @@ package body bus_pkg is
                      constant bus_handle : bus_t;
                      constant address : std_logic_vector;
                      variable data : inout std_logic_vector) is
-    variable reply : reply_t;
+    variable reference : bus_reference_t;
   begin
-    read_bus(event, bus_handle, address, reply);
-    await_read_bus_reply(event, reply, data);
+    read_bus(event, bus_handle, address, reference);
+    await_read_bus_reply(event, reference, data);
   end procedure;
 
 
