@@ -56,7 +56,7 @@ begin
 
   main : process
     variable msg : msg_t;
-    variable reply : reply_t;
+    variable reply : bus_reference_t;
     variable reply_queue : queue_t := allocate;
     variable tmp : std_logic_vector(rdata'range);
     variable rnd : RandomPType;
