@@ -89,10 +89,10 @@ begin
       -- Test that allocation is efficient
       memory := new_memory;
 
-      for i in 0 to 1023 loop
-        allocation := allocate(memory, 1000);
-        check_equal(base_address(allocation), 1000*i, "base address");
-        check_equal(last_address(allocation), 1000*(i+1)-1, "last address");
+      for i in 0 to 500-1 loop
+        allocation := allocate(memory, 500);
+        check_equal(base_address(allocation), 500*i, "base address");
+        check_equal(last_address(allocation), 500*(i+1)-1, "last address");
       end loop;
 
     elsif run("Test allocate with alignment") then
