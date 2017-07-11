@@ -9,7 +9,11 @@ Interface towards Aldec Riviera Pro
 """
 
 
+
 from __future__ import print_function
+
+#VW
+import subprocess
 
 from os.path import join, dirname, abspath
 import os
@@ -100,6 +104,8 @@ class RivieraProInterface(VsimSimulatorMixin, SimulatorInterface):
         self._coverage = coverage
         self._coverage_files = set()
 
+    
+
     def add_simulator_specific(self, project):
         """
         Add coverage flags
@@ -141,17 +147,24 @@ class RivieraProInterface(VsimSimulatorMixin, SimulatorInterface):
                 source_file.compile_options.get("rivierapro.vcom_flags", []) +
                 ['-' + source_file.get_vhdl_standard(), '-work', source_file.library.name, source_file.name])
 
+
+
     def compile_verilog_file_command(self, source_file):
         """
         Returns the command to compile a Verilog file
         """
-        args = [join(self._prefix, 'vlog'), '-quiet', '-sv2k12', '-lc', self._sim_cfg_file_name]
+        vw_modified_path = vw_fix_cygwin_path(self._sim_cfg_file_name)
+
+        args = [join(self._prefix, 'vlog'), '-quiet', '-sv2k12', '-lc', vw_modified_path]
         args += source_file.compile_options.get("rivierapro.vlog_flags", [])
-        args += ['-work', source_file.library.name, source_file.name]
+
+        vw_modified_path = vw_fix_cygwin_path(source_file.name)
+        args += ['-work', source_file.library.name, vw_modified_path]
         for library in self._libraries:
             args += ["-l", library.name]
         for include_dir in source_file.include_dirs:
-            args += ["+incdir+%s" % include_dir]
+            vw_modified_path = vw_fix_cygwin_path(include_dir)
+            args += ["+incdir+%s" % vw_modified_path]
         for key, value in source_file.defines.items():
             args += ["+define+%s=%s" % (key, value)]
         return args
@@ -372,6 +385,24 @@ def format_generic(value):
         return '"%s"' % value_str
     return value_str
 
+def vw_fix_cygwin_path(in_path):
+        """
+        Trick to fix dirty path issues with Cygwin
+        """
+	#VW
+	print ("VW: " + in_path)
+	# vw_modified_cygpath = "C:/cygwin64/home/srini" + self._sim_cfg_file_name[11:]
+	vw_path_cmd = "cygpath -w " + in_path
+	vw_modified_cygpath = subprocess.check_output(vw_path_cmd, shell=True)
+	print ("VW: " + vw_modified_cygpath)
+        vw_modified_cygpath = vw_modified_cygpath.replace('\\', '/')
+	print ("VW: " + vw_modified_cygpath)
+        vw_modified_cygpath = vw_modified_cygpath.rstrip()
+	print ("VW: " + vw_modified_cygpath)
+
+        #vw_modified_cygpath = "C:/cygwin64/home/srini/proj/srini/VW_VUnit/vunit/examples/verilog/user_guide/vunit_out/rivierapro/library.cfg"
+	print ("VW: " + vw_modified_cygpath)
+	return vw_modified_cygpath
 
 class VersionConsumer(object):
     """
@@ -389,3 +420,4 @@ class VersionConsumer(object):
             self.year = int(match.group('year'))
             self.month = int(match.group('month'))
         return True
+
